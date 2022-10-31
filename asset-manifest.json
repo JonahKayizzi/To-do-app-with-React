@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/JonahKayizzi/To-do-app-with-React/static/css/main.04e95c74.css",
+    "main.js": "/JonahKayizzi/To-do-app-with-React/static/js/main.300b4853.js",
+    "index.html": "/JonahKayizzi/To-do-app-with-React/index.html",
+    "main.04e95c74.css.map": "/JonahKayizzi/To-do-app-with-React/static/css/main.04e95c74.css.map",
+    "main.300b4853.js.map": "/JonahKayizzi/To-do-app-with-React/static/js/main.300b4853.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.04e95c74.css",
+    "static/js/main.300b4853.js"
+  ]
+}
