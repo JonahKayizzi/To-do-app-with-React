@@ -13,6 +13,9 @@ This is a To do app developed using React & Lifecycle methods to consolidate kno
 - Gitflow
 - Hooks, States, Props
 
+## Live Demo
+
+[View the live demo](https://incredible-alfajores-408a44.netlify.app/)
 
 ## Getting Started
 
