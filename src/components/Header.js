@@ -9,16 +9,16 @@ const Header = () => {
     <header style={headerStyle}>
       <h1
         style={{
-          fontSize: '6rem',
+          fontSize: '4rem',
           fontWeight: '600',
           marginBottom: '2rem',
           lineHeight: '1em',
           color: '#ececec',
-          textTransform: 'lowercase',
+          textTransform: 'capitalize',
           textAlign: 'center',
         }}
       >
-        todos
+        My Schedule
       </h1>
     </header>
   );

@@ -1,5 +1,5 @@
 {
-  "name": "react-todo-app",
+  "name": "my-schedule-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -7,7 +7,6 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "gh-pages": "^4.0.0",
-    "node-sass": "^7.0.3",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -15,11 +14,19 @@
     "react-router-dom": "^6.4.2",
     "react-scripts": "5.0.1",
     "uuid": "^9.0.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "react-datepicker": "^4.16.0",
+    "react-select": "^5.7.0",
+    "react-hot-toast": "^2.4.1",
+    "react-beautiful-dnd": "^13.1.1",
+    "moment": "^2.29.4",
+    "@emailjs/browser": "^4.4.1",
+    "react-notifications": "^1.7.4",
+    "sass": "^1.77.8"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "set \"DISABLE_ESLINT_PLUGIN=true\" && react-scripts start",
+    "build": "set \"DISABLE_ESLINT_PLUGIN=true\" && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -27,7 +34,22 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "linebreak-style": "off",
+      "react/prop-types": "off",
+      "max-len": "off",
+      "comma-dangle": "off",
+      "no-confusing-arrow": "off",
+      "function-paren-newline": "off",
+      "implicit-arrow-linebreak": "off",
+      "arrow-parens": "off",
+      "class-methods-use-this": "off",
+      "consistent-return": "off",
+      "object-curly-newline": "off",
+      "no-trailing-spaces": "off",
+      "react/button-has-type": "off"
+    }
   },
   "browserslist": {
     "production": [

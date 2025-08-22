@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator for My Schedule</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        .icon-container {
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+        }
+        .icon {
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .icon-192 {
+            width: 192px;
+            height: 192px;
+            font-size: 48px;
+        }
+        .icon-512 {
+            width: 512px;
+            height: 512px;
+            font-size: 128px;
+        }
+        .calendar-grid {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 30%;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+        .calendar-grid::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255,255,255,0.3);
+        }
+        .calendar-grid::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 33%;
+            width: 1px;
+            background: rgba(255,255,255,0.3);
+        }
+        .dots {
+            position: absolute;
+            top: 75%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .icon-512 .dot {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Schedule App Icons</h1>
+    <p>Take screenshots of these icons and save them as PNG files:</p>
+    
+    <div class="icon-container">
+        <div class="icon icon-192">
+            📅
+            <div class="calendar-grid"></div>
+            <div class="dots">
+                <div class="dot" style="background: #ef4444;"></div>
+                <div class="dot" style="background: #10b981;"></div>
+                <div class="dot" style="background: #f59e0b;"></div>
+            </div>
+        </div>
+        <p>192x192 (save as logo192.png)</p>
+    </div>
+    
+    <div class="icon-container">
+        <div class="icon icon-512">
+            📅
+            <div class="calendar-grid"></div>
+            <div class="dots">
+                <div class="dot" style="background: #ef4444;"></div>
+                <div class="dot" style="background: #10b981;"></div>
+                <div class="dot" style="background: #f59e0b;"></div>
+            </div>
+        </div>
+        <p>512x512 (save as logo512.png)</p>
+    </div>
+
+    <div style="margin-top: 40px;">
+        <h2>Instructions:</h2>
+        <ol>
+            <li>Open this file (icon-generator.html) in your browser</li>
+            <li>Take a screenshot of each icon (exactly the square part)</li>
+            <li>Save them as PNG files: logo192.png and logo512.png</li>
+            <li>Replace the existing files in the public folder</li>
+            <li>For favicon.ico, you can convert the favicon.svg using an online converter</li>
+        </ol>
+        
+        <h3>Online Tools for Conversion:</h3>
+        <ul>
+            <li><strong>SVG to ICO:</strong> <a href="https://convertio.co/svg-ico/" target="_blank">convertio.co/svg-ico/</a></li>
+            <li><strong>PNG to ICO:</strong> <a href="https://favicon.io/favicon-converter/" target="_blank">favicon.io/favicon-converter/</a></li>
+            <li><strong>Icon Generator:</strong> <a href="https://realfavicongenerator.net/" target="_blank">realfavicongenerator.net</a></li>
+        </ul>
+    </div>
+</body>
+</html>

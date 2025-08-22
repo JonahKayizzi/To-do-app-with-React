@@ -1,0 +1,409 @@
+.todo-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 2-Column Layout */
+.todo-container-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.section-icon {
+  font-size: 24px;
+  color: #3b82f6;
+}
+
+.section-icon.overdue {
+  color: #ef4444;
+}
+
+.task-count {
+  background: #3b82f6;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 32px;
+  text-align: center;
+}
+
+.task-count.overdue {
+  background: #ef4444;
+}
+
+/* Due Tasks Section */
+.due-tasks {
+  border-left: 4px solid #3b82f6;
+}
+
+.due-tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 24px;
+}
+
+.due-task-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.due-task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.due-task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.due-task-title {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 16px;
+  line-height: 1.4;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.due-task-priority {
+  padding: 4px 8px;
+  border-radius: 12px;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.due-task-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.priority-icon {
+  font-size: 14px;
+}
+
+.priority-icon.high {
+  color: #ef4444;
+}
+
+.priority-icon.medium {
+  color: #f59e0b;
+}
+
+.priority-icon.low {
+  color: #10b981;
+}
+
+/* Overdue Tasks Section */
+.overdue-tasks {
+  border-left: 4px solid #ef4444;
+}
+
+.overdue-tasks-list {
+  padding: 24px;
+}
+
+.load-more-btn {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.load-more-btn:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+/* Categories Section */
+.categories {
+  border-left: 4px solid #10b981;
+}
+
+.category-section {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.category-section:last-child {
+  border-bottom: none;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.category-header:hover {
+  background: #f4f4f5;
+}
+
+.category-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.category-color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.category-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.category-task-count {
+  background: #e2e8f0;
+  color: #475569;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.expand-icon {
+  color: #64748b;
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.expand-icon.small {
+  font-size: 16px;
+}
+
+.category-content {
+  padding: 0 24px 24px;
+}
+
+.subcategory-section {
+  margin-top: 20px;
+}
+
+.subcategory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.subcategory-header:hover {
+  background: #f1f5f9;
+}
+
+.subcategory-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.subcategory-task-count {
+  background: #e5e7eb;
+  color: #6b7280;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* No Tasks Message */
+.no-tasks {
+  text-align: center;
+  padding: 48px 24px;
+  color: #6b7280;
+}
+
+.no-tasks-icon {
+  font-size: 48px;
+  color: #d1d5db;
+  margin-bottom: 16px;
+}
+
+.no-tasks h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.no-tasks p {
+  margin: 0;
+  font-size: 16px;
+  color: #9ca3af;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .todo-container-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .left-column,
+  .right-column {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .todo-container {
+    padding: 16px;
+  }
+
+  .section-header {
+    padding: 16px 20px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .due-tasks-grid {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .due-task-card {
+    padding: 14px;
+  }
+
+  .due-task-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .due-task-priority {
+    align-self: flex-start;
+  }
+
+  .category-header {
+    padding: 16px 20px;
+  }
+
+  .category-content {
+    padding: 0 20px 20px;
+  }
+
+  .subcategory-header {
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .todo-container {
+    padding: 12px;
+  }
+
+  .section-header {
+    padding: 14px 16px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .due-tasks-grid {
+    padding: 16px;
+  }
+
+  .due-task-card {
+    padding: 12px;
+  }
+
+  .category-header {
+    padding: 14px 16px;
+  }
+
+  .category-content {
+    padding: 0 16px 16px;
+  }
+
+  .subcategory-header {
+    padding: 8px 12px;
+  }
+}

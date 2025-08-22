@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Calendar background -->
+  <rect x="4" y="6" width="24" height="22" rx="2" ry="2" fill="#3b82f6"/>
+  
+  <!-- Calendar header -->
+  <rect x="4" y="6" width="24" height="6" rx="2" ry="2" fill="#1e40af"/>
+  
+  <!-- Binding rings -->
+  <rect x="9" y="3" width="2" height="6" rx="1" ry="1" fill="#6b7280"/>
+  <rect x="21" y="3" width="2" height="6" rx="1" ry="1" fill="#6b7280"/>
+  
+  <!-- Calendar grid -->
+  <line x1="8" y1="16" x2="24" y2="16" stroke="#ffffff" stroke-width="0.5"/>
+  <line x1="8" y1="20" x2="24" y2="20" stroke="#ffffff" stroke-width="0.5"/>
+  <line x1="12" y1="12" x2="12" y2="24" stroke="#ffffff" stroke-width="0.5"/>
+  <line x1="16" y1="12" x2="16" y2="24" stroke="#ffffff" stroke-width="0.5"/>
+  <line x1="20" y1="12" x2="20" y2="24" stroke="#ffffff" stroke-width="0.5"/>
+  
+  <!-- Task dots -->
+  <circle cx="10" cy="18" r="1" fill="#ef4444"/>
+  <circle cx="14" cy="14" r="1" fill="#10b981"/>
+  <circle cx="18" cy="22" r="1" fill="#f59e0b"/>
+  <circle cx="22" cy="18" r="1" fill="#a855f7"/>
+</svg>
