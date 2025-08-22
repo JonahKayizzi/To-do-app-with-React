@@ -1,6 +1,6 @@
 import React from 'react';
-import InputTodo from './InputTodo';
 import { FaTimes } from 'react-icons/fa';
+import InputTodo from './InputTodo';
 import './InputTodoModal.css';
 
 const InputTodoModal = ({ isOpen, onClose }) => {

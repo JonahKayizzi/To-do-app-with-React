@@ -28,7 +28,7 @@ function Home() {
         <div className="section-span-4 main-sections">
           <TodoContainer />
         </div>
-                <div className="section-span-4 main-sections">
+        <div className="section-span-4 main-sections">
           <GoogleCalendarIntegration />
           <NotificationSettings />
         </div>

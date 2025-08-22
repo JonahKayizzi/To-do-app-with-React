@@ -45,7 +45,9 @@ class NotificationService {
       body = `"${task.title}" is due tomorrow!`;
     }
     if (title && body) {
-      await this.showDesktopNotification(title, { body, icon, tag: `task-${task.id}`, data: { taskId: task.id } });
+      await this.showDesktopNotification(title, {
+        body, icon, tag: `task-${task.id}`, data: { taskId: task.id },
+      });
     }
   }
 

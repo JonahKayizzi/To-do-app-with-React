@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useTodo } from '../context/TodoContext';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
-import { FaCalendarAlt, FaClock, FaExclamationTriangle, FaGoogle } from 'react-icons/fa';
+import {
+  FaCalendarAlt, FaClock, FaExclamationTriangle, FaGoogle,
+} from 'react-icons/fa';
+import { useTodo } from '../context/TodoContext';
 import 'react-datepicker/dist/react-datepicker.css';
 import './InputTodo.css';
 
 const InputTodo = ({ onTaskAdded }) => {
-  const { state, addTodo, addCategory, addSubcategory } = useTodo();
+  const {
+    state, addTodo, addCategory, addSubcategory,
+  } = useTodo();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -16,12 +20,12 @@ const InputTodo = ({ onTaskAdded }) => {
   const [priority, setPriority] = useState('medium');
   const [location, setLocation] = useState('');
   const [addToCalendar, setAddToCalendar] = useState(false);
-  
+
   // Category management
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryColor, setNewCategoryColor] = useState('#3B82F6');
-  
+
   // Subcategory management
   const [showSubcategoryForm, setShowSubcategoryForm] = useState(false);
   const [newSubcategoryName, setNewSubcategoryName] = useState('');
@@ -30,27 +34,27 @@ const InputTodo = ({ onTaskAdded }) => {
   const priorityOptions = [
     { value: 'low', label: 'Low', color: '#10B981' },
     { value: 'medium', label: 'Medium', color: '#F59E0B' },
-    { value: 'high', label: 'High', color: '#EF4444' }
+    { value: 'high', label: 'High', color: '#EF4444' },
   ];
 
-  const categoryOptions = state.categories.map(cat => ({
+  const categoryOptions = state.categories.map((cat) => ({
     value: cat.id,
     label: cat.name,
-    color: cat.color
+    color: cat.color,
   }));
 
   const subcategoryOptions = selectedCategory
     ? state.subcategories
-        .filter(sub => sub.categoryId === selectedCategory.value)
-        .map(sub => ({
-          value: sub.id,
-          label: sub.name
-        }))
+      .filter((sub) => sub.categoryId === selectedCategory.value)
+      .map((sub) => ({
+        value: sub.id,
+        label: sub.name,
+      }))
     : [];
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!title.trim()) return;
 
     const todo = {
@@ -61,11 +65,11 @@ const InputTodo = ({ onTaskAdded }) => {
       deadline: deadline ? deadline.toISOString() : null,
       priority,
       location: location.trim(),
-      addToCalendar
+      addToCalendar,
     };
 
     addTodo(todo);
-    
+
     // Reset form
     setTitle('');
     setDescription('');
@@ -75,7 +79,7 @@ const InputTodo = ({ onTaskAdded }) => {
     setPriority('medium');
     setLocation('');
     setAddToCalendar(false);
-    
+
     // Call callback if provided
     if (onTaskAdded) {
       onTaskAdded();
@@ -106,12 +110,12 @@ const InputTodo = ({ onTaskAdded }) => {
     option: (provided, state) => ({
       ...provided,
       color: state.data.color || '#000',
-      backgroundColor: state.isFocused ? '#f3f4f6' : 'white'
+      backgroundColor: state.isFocused ? '#f3f4f6' : 'white',
     }),
     singleValue: (provided, state) => ({
       ...provided,
-      color: state.data.color || '#000'
-    })
+      color: state.data.color || '#000',
+    }),
   };
 
   return (
@@ -128,10 +132,10 @@ const InputTodo = ({ onTaskAdded }) => {
               required
             />
           </div>
-          
+
           <div className="form-group priority-group">
             <Select
-              value={priorityOptions.find(opt => opt.value === priority)}
+              value={priorityOptions.find((opt) => opt.value === priority)}
               onChange={(option) => setPriority(option.value)}
               options={priorityOptions}
               styles={customSelectStyles}
@@ -303,7 +307,7 @@ const InputTodo = ({ onTaskAdded }) => {
               </div>
               <div className="form-group">
                 <Select
-                  value={categoryOptions.find(opt => opt.value === newSubcategoryCategoryId)}
+                  value={categoryOptions.find((opt) => opt.value === newSubcategoryCategoryId)}
                   onChange={(option) => setNewSubcategoryCategoryId(option.value)}
                   options={categoryOptions}
                   placeholder="Select Parent Category"

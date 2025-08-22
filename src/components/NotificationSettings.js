@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FaBell, FaEnvelope, FaDesktop, FaCog, FaCheck, FaTimes } from 'react-icons/fa';
+import {
+  FaBell, FaEnvelope, FaDesktop, FaCog, FaCheck, FaTimes,
+} from 'react-icons/fa';
 import notificationService from '../services/notificationService';
 import './NotificationSettings.css';
 
@@ -11,9 +13,9 @@ const NotificationSettings = () => {
     due1Day: true,
     due6Hours: true,
     due1Hour: true,
-    overdue: true
+    overdue: true,
   });
-  
+
   const [userEmail, setUserEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState('default');
@@ -51,9 +53,9 @@ const NotificationSettings = () => {
   }, [userEmail]);
 
   const handleSettingChange = (setting) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      [setting]: !prev[setting]
+      [setting]: !prev[setting],
     }));
   };
 
@@ -71,12 +73,12 @@ const NotificationSettings = () => {
     try {
       const permission = await Notification.requestPermission();
       setNotificationPermission(permission);
-      
+
       if (permission === 'granted') {
-        setSettings(prev => ({ ...prev, desktopNotifications: true }));
+        setSettings((prev) => ({ ...prev, desktopNotifications: true }));
         alert('Desktop notifications enabled!');
       } else {
-        setSettings(prev => ({ ...prev, desktopNotifications: false }));
+        setSettings((prev) => ({ ...prev, desktopNotifications: false }));
         alert('Desktop notifications were denied.');
       }
     } catch (error) {
@@ -96,7 +98,7 @@ const NotificationSettings = () => {
     try {
       await notificationService.showDesktopNotification(
         'Test Notification',
-        'This is a test notification from your Todo app!'
+        'This is a test notification from your Todo app!',
       );
       setTestNotification('Desktop notification sent successfully!');
       setTimeout(() => setTestNotification(''), 3000);
@@ -122,9 +124,9 @@ const NotificationSettings = () => {
       const success = await notificationService.sendTaskDueEmail(
         { title: 'Test Task' },
         24, // 1 day
-        userEmail
+        userEmail,
       );
-      
+
       if (success) {
         setTestNotification('Test email sent successfully!');
       } else {
@@ -142,7 +144,7 @@ const NotificationSettings = () => {
     if (!('Notification' in window)) {
       return { status: 'unsupported', text: 'Not supported', color: '#6b7280' };
     }
-    
+
     switch (notificationPermission) {
       case 'granted':
         return { status: 'enabled', text: 'Enabled', color: '#10b981' };
@@ -172,7 +174,7 @@ const NotificationSettings = () => {
               {notificationStatus.text}
             </span>
           </div>
-          
+
           <div className="setting-controls">
             <label className="setting-toggle">
               <input
@@ -181,10 +183,10 @@ const NotificationSettings = () => {
                 onChange={() => {}}
                 disabled={notificationPermission !== 'granted'}
               />
-              <span className="toggle-slider"></span>
+              <span className="toggle-slider" />
               Enable desktop notifications
             </label>
-            
+
             {notificationPermission !== 'granted' && (
               <button
                 onClick={requestNotificationPermission}
@@ -194,7 +196,7 @@ const NotificationSettings = () => {
                 {isLoading ? 'Requesting...' : 'Request Permission'}
               </button>
             )}
-            
+
             {notificationPermission === 'granted' && (
               <button
                 onClick={testDesktopNotification}
@@ -212,7 +214,7 @@ const NotificationSettings = () => {
             <FaEnvelope className="setting-icon" />
             <h4>Email Notifications</h4>
           </div>
-          
+
           <div className="setting-controls">
             <label className="setting-toggle">
               <input
@@ -220,10 +222,10 @@ const NotificationSettings = () => {
                 checked={settings.emailNotifications}
                 onChange={() => handleSettingChange('emailNotifications')}
               />
-              <span className="toggle-slider"></span>
+              <span className="toggle-slider" />
               Enable email notifications
             </label>
-            
+
             {settings.emailNotifications && (
               <div className="email-input-group">
                 <input
@@ -251,7 +253,7 @@ const NotificationSettings = () => {
             <FaCog className="setting-icon" />
             <h4>Sound & Alerts</h4>
           </div>
-          
+
           <div className="setting-controls">
             <label className="setting-toggle">
               <input
@@ -259,7 +261,7 @@ const NotificationSettings = () => {
                 checked={settings.soundNotifications}
                 onChange={() => handleSettingChange('soundNotifications')}
               />
-              <span className="toggle-slider"></span>
+              <span className="toggle-slider" />
               Play sound for notifications
             </label>
           </div>
@@ -271,7 +273,7 @@ const NotificationSettings = () => {
             <FaBell className="setting-icon" />
             <h4>Notification Timing</h4>
           </div>
-          
+
           <div className="timing-controls">
             <label className="timing-toggle">
               <input
@@ -279,37 +281,37 @@ const NotificationSettings = () => {
                 checked={settings.due1Day}
                 onChange={() => handleSettingChange('due1Day')}
               />
-              <span className="toggle-slider"></span>
+              <span className="toggle-slider" />
               Notify 1 day before deadline
             </label>
-            
+
             <label className="timing-toggle">
               <input
                 type="checkbox"
                 checked={settings.due6Hours}
                 onChange={() => handleSettingChange('due6Hours')}
               />
-              <span className="toggle-slider"></span>
+              <span className="toggle-slider" />
               Notify 6 hours before deadline
             </label>
-            
+
             <label className="timing-toggle">
               <input
                 type="checkbox"
                 checked={settings.due1Hour}
                 onChange={() => handleSettingChange('due1Hour')}
               />
-              <span className="toggle-slider"></span>
+              <span className="toggle-slider" />
               Notify 1 hour before deadline
             </label>
-            
+
             <label className="timing-toggle">
               <input
                 type="checkbox"
                 checked={settings.overdue}
                 onChange={() => handleSettingChange('overdue')}
               />
-              <span className="toggle-slider"></span>
+              <span className="toggle-slider" />
               Notify for overdue tasks
             </label>
           </div>
@@ -332,4 +334,3 @@ const NotificationSettings = () => {
 };
 
 export default NotificationSettings;
-

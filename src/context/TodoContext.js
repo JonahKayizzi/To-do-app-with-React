@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
+import React, {
+  createContext, useContext, useReducer, useEffect, useState,
+} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
@@ -9,7 +11,7 @@ const initialState = {
     { id: '1', name: 'Work', color: '#3B82F6' },
     { id: '2', name: 'Personal', color: '#10B981' },
     { id: '3', name: 'Shopping', color: '#F59E0B' },
-    { id: '4', name: 'Health', color: '#EF4444' }
+    { id: '4', name: 'Health', color: '#EF4444' },
   ],
   subcategories: [
     { id: '1', categoryId: '1', name: 'Meetings' },
@@ -19,11 +21,11 @@ const initialState = {
     { id: '5', categoryId: '3', name: 'Groceries' },
     { id: '6', categoryId: '3', name: 'Clothing' },
     { id: '7', categoryId: '4', name: 'Exercise' },
-    { id: '8', categoryId: '4', name: 'Medical' }
+    { id: '8', categoryId: '4', name: 'Medical' },
   ],
   todos: [],
   googleCalendarEvents: [],
-  notifications: []
+  notifications: [],
 };
 
 const todoReducer = (state, action) => {
@@ -31,121 +33,109 @@ const todoReducer = (state, action) => {
     case 'ADD_CATEGORY':
       return {
         ...state,
-        categories: [...state.categories, action.payload]
+        categories: [...state.categories, action.payload],
       };
-    
+
     case 'UPDATE_CATEGORY':
       return {
         ...state,
-        categories: state.categories.map(cat => 
-          cat.id === action.payload.id ? action.payload : cat
-        )
+        categories: state.categories.map((cat) => (cat.id === action.payload.id ? action.payload : cat)),
       };
-    
+
     case 'DELETE_CATEGORY':
       return {
         ...state,
-        categories: state.categories.filter(cat => cat.id !== action.payload),
-        subcategories: state.subcategories.filter(sub => sub.categoryId !== action.payload),
-        todos: state.todos.map(todo => 
-          todo.categoryId === action.payload ? { ...todo, categoryId: null, subcategoryId: null } : todo
-        )
+        categories: state.categories.filter((cat) => cat.id !== action.payload),
+        subcategories: state.subcategories.filter((sub) => sub.categoryId !== action.payload),
+        todos: state.todos.map((todo) => (todo.categoryId === action.payload ? { ...todo, categoryId: null, subcategoryId: null } : todo)),
       };
-    
+
     case 'ADD_SUBCATEGORY':
       return {
         ...state,
-        subcategories: [...state.subcategories, action.payload]
+        subcategories: [...state.subcategories, action.payload],
       };
-    
+
     case 'UPDATE_SUBCATEGORY':
       return {
         ...state,
-        subcategories: state.subcategories.map(sub => 
-          sub.id === action.payload.id ? action.payload : sub
-        )
+        subcategories: state.subcategories.map((sub) => (sub.id === action.payload.id ? action.payload : sub)),
       };
-    
+
     case 'DELETE_SUBCATEGORY':
       return {
         ...state,
-        subcategories: state.subcategories.filter(sub => sub.id !== action.payload),
-        todos: state.todos.map(todo => 
-          todo.subcategoryId === action.payload ? { ...todo, subcategoryId: null } : todo
-        )
+        subcategories: state.subcategories.filter((sub) => sub.id !== action.payload),
+        todos: state.todos.map((todo) => (todo.subcategoryId === action.payload ? { ...todo, subcategoryId: null } : todo)),
       };
-    
+
     case 'ADD_TODO':
       return {
         ...state,
-        todos: [...state.todos, action.payload]
+        todos: [...state.todos, action.payload],
       };
-    
+
     case 'UPDATE_TODO':
       return {
         ...state,
-        todos: state.todos.map(todo => 
-          todo.id === action.payload.id ? action.payload : todo
-        )
+        todos: state.todos.map((todo) => (todo.id === action.payload.id ? action.payload : todo)),
       };
-    
+
     case 'DELETE_TODO':
       return {
         ...state,
-        todos: state.todos.filter(todo => todo.id !== action.payload)
+        todos: state.todos.filter((todo) => todo.id !== action.payload),
       };
-    
+
     case 'TOGGLE_TODO':
       return {
         ...state,
-        todos: state.todos.map(todo => 
-          todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo
-        )
+        todos: state.todos.map((todo) => (todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo)),
       };
-    
+
     case 'SET_GOOGLE_CALENDAR_EVENTS':
       return {
         ...state,
-        googleCalendarEvents: action.payload
+        googleCalendarEvents: action.payload,
       };
-    
+
     case 'ADD_NOTIFICATION':
       return {
         ...state,
-        notifications: [...state.notifications, action.payload]
+        notifications: [...state.notifications, action.payload],
       };
-    
+
     case 'REMOVE_NOTIFICATION':
       return {
         ...state,
-        notifications: state.notifications.filter(notif => notif.id !== action.payload)
+        notifications: state.notifications.filter((notif) => notif.id !== action.payload),
       };
 
     // Data loading cases for localStorage persistence
     case 'SET_TODOS':
       return {
         ...state,
-        todos: action.payload || []
+        todos: action.payload || [],
       };
 
     case 'SET_CATEGORIES':
       return {
         ...state,
-        categories: action.payload || initialState.categories
+        categories: action.payload || initialState.categories,
       };
 
     case 'SET_SUBCATEGORIES':
       return {
         ...state,
-        subcategories: action.payload || initialState.subcategories
+        subcategories: action.payload || initialState.subcategories,
       };
 
     case 'SET_GOOGLECALENDAREVENTS':
       return {
         ...state,
-        googleCalendarEvents: action.payload || []
+        googleCalendarEvents: action.payload || [],
       };
-    
+
     default:
       return state;
   }
@@ -161,8 +151,7 @@ export const TodoProvider = ({ children }) => {
       const savedState = localStorage.getItem('todoAppState');
       if (savedState) {
         const parsedState = JSON.parse(savedState);
-        
-        
+
         // Load each data type individually
         if (parsedState.todos && Array.isArray(parsedState.todos)) {
           dispatch({ type: 'SET_TODOS', payload: parsedState.todos });
@@ -189,12 +178,11 @@ export const TodoProvider = ({ children }) => {
   // Save data to localStorage whenever state changes (but not during initial load)
   useEffect(() => {
     if (!isInitialized) return; // Don't save during initial load
-    
+
     try {
       const stateToSave = { ...state };
       delete stateToSave.notifications; // Don't save notifications
-      
-      
+
       localStorage.setItem('todoAppState', JSON.stringify(stateToSave));
     } catch (error) {
       console.error('Error saving to localStorage:', error);
@@ -205,14 +193,12 @@ export const TodoProvider = ({ children }) => {
   useEffect(() => {
     const checkDueTasks = () => {
       const now = moment();
-      const dueTasks = state.todos.filter(todo => 
-        !todo.completed && todo.deadline && moment(todo.deadline).isAfter(now)
-      );
+      const dueTasks = state.todos.filter((todo) => !todo.completed && todo.deadline && moment(todo.deadline).isAfter(now));
 
-      dueTasks.forEach(todo => {
+      dueTasks.forEach((todo) => {
         const deadline = moment(todo.deadline);
         const timeUntilDeadline = deadline.diff(now, 'hours', true);
-        
+
         if (timeUntilDeadline <= 1 && timeUntilDeadline > 0) {
           // Due in 1 hour
           dispatch({
@@ -222,8 +208,8 @@ export const TodoProvider = ({ children }) => {
               type: 'urgent',
               message: `Task "${todo.title}" is due in 1 hour!`,
               todoId: todo.id,
-              timestamp: Date.now()
-            }
+              timestamp: Date.now(),
+            },
           });
         } else if (timeUntilDeadline <= 6 && timeUntilDeadline > 1) {
           // Due in 6 hours
@@ -234,8 +220,8 @@ export const TodoProvider = ({ children }) => {
               type: 'warning',
               message: `Task "${todo.title}" is due in 6 hours!`,
               todoId: todo.id,
-              timestamp: Date.now()
-            }
+              timestamp: Date.now(),
+            },
           });
         } else if (timeUntilDeadline <= 24 && timeUntilDeadline > 6) {
           // Due in 1 day
@@ -246,8 +232,8 @@ export const TodoProvider = ({ children }) => {
               type: 'info',
               message: `Task "${todo.title}" is due tomorrow!`,
               todoId: todo.id,
-              timestamp: Date.now()
-            }
+              timestamp: Date.now(),
+            },
           });
         }
       });
@@ -266,9 +252,8 @@ export const TodoProvider = ({ children }) => {
       const category = { id: uuidv4(), name, color };
       dispatch({
         type: 'ADD_CATEGORY',
-        payload: category
+        payload: category,
       });
-
     },
     updateCategory: (category) => {
       dispatch({ type: 'UPDATE_CATEGORY', payload: category });
@@ -279,7 +264,7 @@ export const TodoProvider = ({ children }) => {
     addSubcategory: (name, categoryId) => {
       dispatch({
         type: 'ADD_SUBCATEGORY',
-        payload: { id: uuidv4(), name, categoryId }
+        payload: { id: uuidv4(), name, categoryId },
       });
     },
     updateSubcategory: (subcategory) => {
@@ -289,12 +274,13 @@ export const TodoProvider = ({ children }) => {
       dispatch({ type: 'DELETE_SUBCATEGORY', payload: id });
     },
     addTodo: (todo) => {
-      const newTodo = { ...todo, id: uuidv4(), completed: false, createdAt: Date.now() };
+      const newTodo = {
+        ...todo, id: uuidv4(), completed: false, createdAt: Date.now(),
+      };
       dispatch({
         type: 'ADD_TODO',
-        payload: newTodo
+        payload: newTodo,
       });
-
     },
     updateTodo: (todo) => {
       dispatch({ type: 'UPDATE_TODO', payload: todo });
@@ -307,24 +293,24 @@ export const TodoProvider = ({ children }) => {
     },
     getTodosByCategory: () => {
       const grouped = {};
-      state.categories.forEach(category => {
+      state.categories.forEach((category) => {
         grouped[category.id] = {
           category,
           subcategories: {},
-          todos: []
+          todos: [],
         };
       });
 
-      state.subcategories.forEach(subcategory => {
+      state.subcategories.forEach((subcategory) => {
         if (grouped[subcategory.categoryId]) {
           grouped[subcategory.categoryId].subcategories[subcategory.id] = {
             subcategory,
-            todos: []
+            todos: [],
           };
         }
       });
 
-      state.todos.forEach(todo => {
+      state.todos.forEach((todo) => {
         if (todo.categoryId && grouped[todo.categoryId]) {
           grouped[todo.categoryId].todos.push(todo);
           if (todo.subcategoryId && grouped[todo.categoryId].subcategories[todo.subcategoryId]) {
@@ -337,16 +323,12 @@ export const TodoProvider = ({ children }) => {
     },
     getDueTasks: () => {
       const now = moment();
-      return state.todos.filter(todo => 
-        !todo.completed && todo.deadline && moment(todo.deadline).isAfter(now)
-      ).sort((a, b) => moment(a.deadline).diff(moment(b.deadline)));
+      return state.todos.filter((todo) => !todo.completed && todo.deadline && moment(todo.deadline).isAfter(now)).sort((a, b) => moment(a.deadline).diff(moment(b.deadline)));
     },
     getOverdueTasks: () => {
       const now = moment();
-      return state.todos.filter(todo => 
-        !todo.completed && todo.deadline && moment(todo.deadline).isBefore(now)
-      ).sort((a, b) => moment(b.deadline).diff(moment(a.deadline)));
-    }
+      return state.todos.filter((todo) => !todo.completed && todo.deadline && moment(todo.deadline).isBefore(now)).sort((a, b) => moment(b.deadline).diff(moment(a.deadline)));
+    },
   };
 
   return (
@@ -363,4 +345,3 @@ export const useTodo = () => {
   }
   return context;
 };
-

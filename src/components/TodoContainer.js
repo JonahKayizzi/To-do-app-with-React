@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import {
+  FaExclamationTriangle, FaClock, FaCalendarAlt, FaChevronDown, FaChevronRight,
+} from 'react-icons/fa';
 import { useTodo } from '../context/TodoContext';
 import TodoItem from './TodoItem';
-import { FaExclamationTriangle, FaClock, FaCalendarAlt, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import './TodoContainer.css';
 
 const TodoContainer = () => {
-  const { state, getTodosByCategory, getDueTasks, getOverdueTasks } = useTodo();
+  const {
+    state, getTodosByCategory, getDueTasks, getOverdueTasks,
+  } = useTodo();
   const [expandedCategories, setExpandedCategories] = useState({});
   const [expandedSubcategories, setExpandedSubcategories] = useState({});
   const [showOverdueCount, setShowOverdueCount] = useState(10);
@@ -15,16 +19,16 @@ const TodoContainer = () => {
   const overdueTasks = getOverdueTasks();
 
   const toggleCategory = (categoryId) => {
-    setExpandedCategories(prev => ({
+    setExpandedCategories((prev) => ({
       ...prev,
-      [categoryId]: !prev[categoryId]
+      [categoryId]: !prev[categoryId],
     }));
   };
 
   const toggleSubcategory = (subcategoryId) => {
-    setExpandedSubcategories(prev => ({
+    setExpandedSubcategories((prev) => ({
       ...prev,
-      [subcategoryId]: !prev[subcategoryId]
+      [subcategoryId]: !prev[subcategoryId],
     }));
   };
 
@@ -70,15 +74,18 @@ const TodoContainer = () => {
                 <span className="task-count overdue">{overdueTasks.length}</span>
               </div>
               <div className="overdue-tasks-list">
-                {overdueTasks.slice(0, showOverdueCount).map(todo => (
+                {overdueTasks.slice(0, showOverdueCount).map((todo) => (
                   <TodoItem key={todo.id} todo={todo} />
                 ))}
                 {overdueTasks.length > showOverdueCount && (
                   <button
-                    onClick={() => setShowOverdueCount(prev => prev + 10)}
+                    onClick={() => setShowOverdueCount((prev) => prev + 10)}
                     className="load-more-btn"
                   >
-                    Load More ({overdueTasks.length - showOverdueCount} remaining)
+                    Load More (
+                    {overdueTasks.length - showOverdueCount}
+                    {' '}
+                    remaining)
                   </button>
                 )}
               </div>
@@ -96,11 +103,11 @@ const TodoContainer = () => {
                 <span className="task-count">{dueTasks.length}</span>
               </div>
               <div className="due-tasks-grid">
-                {dueTasks.slice(0, 6).map(todo => (
+                {dueTasks.slice(0, 6).map((todo) => (
                   <div key={todo.id} className="due-task-card">
                     <div className="due-task-header">
                       <span className="due-task-title">{todo.title}</span>
-                      <span 
+                      <span
                         className="due-task-priority"
                         style={{ backgroundColor: getPriorityColor(todo.priority) }}
                       >
@@ -110,7 +117,9 @@ const TodoContainer = () => {
                     <div className="due-task-time">
                       {getPriorityIcon(todo.priority)}
                       <span>
-                        Due: {new Date(todo.deadline).toLocaleString()}
+                        Due:
+                        {' '}
+                        {new Date(todo.deadline).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -130,15 +139,15 @@ const TodoContainer = () => {
                 All Tasks by Category
               </h2>
             </div>
-            
+
             {Object.values(groupedTodos).map(({ category, subcategories, todos }) => (
               <div key={category.id} className="category-section">
-                <div 
+                <div
                   className="category-header"
                   onClick={() => toggleCategory(category.id)}
                 >
                   <div className="category-info">
-                    <div 
+                    <div
                       className="category-color-indicator"
                       style={{ backgroundColor: category.color }}
                     />
@@ -155,13 +164,13 @@ const TodoContainer = () => {
                 {expandedCategories[category.id] && (
                   <div className="category-content">
                     {/* Uncategorized tasks in this category */}
-                    {todos.filter(todo => !todo.subcategoryId).length > 0 && (
+                    {todos.filter((todo) => !todo.subcategoryId).length > 0 && (
                       <div className="subcategory-section">
                         <h4 className="subcategory-name">General</h4>
                         <div className="todo-list">
                           {todos
-                            .filter(todo => !todo.subcategoryId)
-                            .map(todo => (
+                            .filter((todo) => !todo.subcategoryId)
+                            .map((todo) => (
                               <TodoItem key={todo.id} todo={todo} />
                             ))}
                         </div>
@@ -171,7 +180,7 @@ const TodoContainer = () => {
                     {/* Subcategories */}
                     {Object.values(subcategories).map(({ subcategory, todos: subTodos }) => (
                       <div key={subcategory.id} className="subcategory-section">
-                        <div 
+                        <div
                           className="subcategory-header"
                           onClick={() => toggleSubcategory(subcategory.id)}
                         >
@@ -186,7 +195,7 @@ const TodoContainer = () => {
 
                         {expandedSubcategories[subcategory.id] && subTodos.length > 0 && (
                           <div className="todo-list">
-                            {subTodos.map(todo => (
+                            {subTodos.map((todo) => (
                               <TodoItem key={todo.id} todo={todo} />
                             ))}
                           </div>
@@ -197,7 +206,7 @@ const TodoContainer = () => {
                     {/* If no subcategories, show all todos directly */}
                     {Object.keys(subcategories).length === 0 && todos.length > 0 && (
                       <div className="todo-list">
-                        {todos.map(todo => (
+                        {todos.map((todo) => (
                           <TodoItem key={todo.id} todo={todo} />
                         ))}
                       </div>

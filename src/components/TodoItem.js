@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { useTodo } from '../context/TodoContext';
-import { FaEdit, FaTrash, FaCalendarAlt, FaMapMarkerAlt, FaExclamationTriangle, FaClock, FaCheck } from 'react-icons/fa';
+import {
+  FaEdit, FaTrash, FaCalendarAlt, FaMapMarkerAlt, FaExclamationTriangle, FaClock, FaCheck,
+} from 'react-icons/fa';
 import moment from 'moment';
+import { useTodo } from '../context/TodoContext';
 import './TodoItem.css';
 
 const TodoItem = ({ todo }) => {
-  const { state, toggleTodo, deleteTodo, updateTodo } = useTodo();
+  const {
+    state, toggleTodo, deleteTodo, updateTodo,
+  } = useTodo();
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     title: todo.title,
@@ -14,43 +18,42 @@ const TodoItem = ({ todo }) => {
     subcategoryId: todo.subcategoryId,
     deadline: todo.deadline ? new Date(todo.deadline) : null,
     priority: todo.priority || 'medium',
-    location: todo.location || ''
+    location: todo.location || '',
   });
 
-  const category = state.categories.find(cat => cat.id === todo.categoryId);
-  const subcategory = state.subcategories.find(sub => sub.id === todo.subcategoryId);
+  const category = state.categories.find((cat) => cat.id === todo.categoryId);
+  const subcategory = state.subcategories.find((sub) => sub.id === todo.subcategoryId);
 
   const priorityColors = {
     low: '#10B981',
     medium: '#F59E0B',
-    high: '#EF4444'
+    high: '#EF4444',
   };
 
   const priorityLabels = {
     low: 'Low',
     medium: 'Medium',
-    high: 'High'
+    high: 'High',
   };
 
   const getTimeUntilDeadline = () => {
     if (!todo.deadline) return null;
-    
+
     const now = moment();
     const deadline = moment(todo.deadline);
     const diff = deadline.diff(now, 'hours', true);
-    
+
     if (diff < 0) {
       return { type: 'overdue', text: `Overdue by ${Math.abs(Math.round(diff))} hours` };
-    } else if (diff <= 1) {
+    } if (diff <= 1) {
       return { type: 'urgent', text: `Due in ${Math.round(diff * 60)} minutes` };
-    } else if (diff <= 6) {
+    } if (diff <= 6) {
       return { type: 'warning', text: `Due in ${Math.round(diff)} hours` };
-    } else if (diff <= 24) {
+    } if (diff <= 24) {
       return { type: 'info', text: `Due in ${Math.round(diff)} hours` };
-    } else {
-      const days = Math.floor(diff / 24);
-      return { type: 'normal', text: `Due in ${days} days` };
     }
+    const days = Math.floor(diff / 24);
+    return { type: 'normal', text: `Due in ${days} days` };
   };
 
   const handleEdit = () => {
@@ -62,7 +65,7 @@ const TodoItem = ({ todo }) => {
       updateTodo({
         ...todo,
         ...editForm,
-        deadline: editForm.deadline ? editForm.deadline.toISOString() : null
+        deadline: editForm.deadline ? editForm.deadline.toISOString() : null,
       });
       setIsEditing(false);
     }
@@ -76,7 +79,7 @@ const TodoItem = ({ todo }) => {
       subcategoryId: todo.subcategoryId,
       deadline: todo.deadline ? new Date(todo.deadline) : null,
       priority: todo.priority || 'medium',
-      location: todo.location || ''
+      location: todo.location || '',
     });
     setIsEditing(false);
   };
@@ -111,7 +114,7 @@ const TodoItem = ({ todo }) => {
               <option value="high">High</option>
             </select>
           </div>
-          
+
           <textarea
             value={editForm.description}
             onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
@@ -119,25 +122,25 @@ const TodoItem = ({ todo }) => {
             placeholder="Description"
             rows="2"
           />
-          
+
           <div className="edit-row">
             <select
               value={editForm.categoryId || ''}
               onChange={(e) => {
-                setEditForm({ 
-                  ...editForm, 
+                setEditForm({
+                  ...editForm,
                   categoryId: e.target.value || null,
-                  subcategoryId: null 
+                  subcategoryId: null,
                 });
               }}
               className="edit-category"
             >
               <option value="">No Category</option>
-              {state.categories.map(cat => (
+              {state.categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
-            
+
             <select
               value={editForm.subcategoryId || ''}
               onChange={(e) => setEditForm({ ...editForm, subcategoryId: e.target.value || null })}
@@ -146,24 +149,24 @@ const TodoItem = ({ todo }) => {
             >
               <option value="">No Subcategory</option>
               {state.subcategories
-                .filter(sub => sub.categoryId === editForm.categoryId)
-                .map(sub => (
+                .filter((sub) => sub.categoryId === editForm.categoryId)
+                .map((sub) => (
                   <option key={sub.id} value={sub.id}>{sub.name}</option>
                 ))}
             </select>
           </div>
-          
+
           <div className="edit-row">
             <input
               type="datetime-local"
               value={editForm.deadline ? moment(editForm.deadline).format('YYYY-MM-DDTHH:mm') : ''}
-              onChange={(e) => setEditForm({ 
-                ...editForm, 
-                deadline: e.target.value ? new Date(e.target.value) : null 
+              onChange={(e) => setEditForm({
+                ...editForm,
+                deadline: e.target.value ? new Date(e.target.value) : null,
               })}
               className="edit-deadline"
             />
-            
+
             <input
               type="text"
               value={editForm.location}
@@ -172,7 +175,7 @@ const TodoItem = ({ todo }) => {
               placeholder="Location"
             />
           </div>
-          
+
           <div className="edit-actions">
             <button onClick={handleSave} className="save-btn">Save</button>
             <button onClick={handleCancel} className="cancel-btn">Cancel</button>
@@ -197,9 +200,9 @@ const TodoItem = ({ todo }) => {
               {todo.title}
             </h3>
           </div>
-          
+
           <div className="todo-priority">
-            <span 
+            <span
               className="priority-badge"
               style={{ backgroundColor: priorityColors[todo.priority] }}
             >
@@ -218,7 +221,7 @@ const TodoItem = ({ todo }) => {
               {category.name}
             </span>
           )}
-          
+
           {subcategory && (
             <span className="subcategory-tag">
               {subcategory.name}
@@ -240,7 +243,7 @@ const TodoItem = ({ todo }) => {
               )}
             </div>
           )}
-          
+
           {todo.location && (
             <div className="detail-item">
               <FaMapMarkerAlt className="detail-icon" />

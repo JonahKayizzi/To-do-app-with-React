@@ -137,12 +137,16 @@ class GoogleCalendarService {
   todoToCalendarEvent(todo) {
     const startTime = moment(todo.deadline).subtract(1, 'hour').toISOString();
     const endTime = moment(todo.deadline).toISOString();
-    return { title: todo.title, description: todo.description || '', startTime, endTime, location: todo.location || '' };
+    return {
+      title: todo.title, description: todo.description || '', startTime, endTime, location: todo.location || '',
+    };
   }
 
   // Convert calendar event to todo
   calendarEventToTodo(event) {
-    return { title: event.title, description: event.description, deadline: event.startTime, location: event.location, categoryId: null, subcategoryId: null, priority: 'medium' };
+    return {
+      title: event.title, description: event.description, deadline: event.startTime, location: event.location, categoryId: null, subcategoryId: null, priority: 'medium',
+    };
   }
 }
 

@@ -139,7 +139,7 @@ const GoogleCalendarIntegration = () => {
                   borderRadius: '8px',
                   border: '1px solid #e2e8f0',
                   width: '100%',
-                  textAlign: 'left'
+                  textAlign: 'left',
                 }}
               >
                 <h5 style={{ margin: '0 0 8px 0', color: '#1e293b' }}>
@@ -150,14 +150,20 @@ const GoogleCalendarIntegration = () => {
                 </p>
                 {event.location && (
                   <p style={{ margin: '0', fontSize: '14px', color: '#6b7280' }}>
-                    📍 {event.location}
+                    📍
+                    {' '}
+                    {event.location}
                   </p>
                 )}
               </div>
             ))}
             {events.length > 5 && (
               <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '16px' }}>
-                Showing 5 of {events.length} events
+                Showing 5 of
+                {' '}
+                {events.length}
+                {' '}
+                events
               </p>
             )}
           </div>
