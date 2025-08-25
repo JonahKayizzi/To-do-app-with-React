@@ -65,6 +65,8 @@ const NotificationSettings = () => {
 
   const requestNotificationPermission = async () => {
     if (!('Notification' in window)) {
+      setTestNotification('Desktop notifications are not supported in this browser.');
+      setTimeout(() => setTestNotification(''), 5000);
       return;
     }
 
@@ -75,11 +77,16 @@ const NotificationSettings = () => {
 
       if (permission === 'granted') {
         setSettings((prev) => ({ ...prev, desktopNotifications: true }));
+        setTestNotification('Desktop notifications enabled!');
+        setTimeout(() => setTestNotification(''), 5000);
       } else {
         setSettings((prev) => ({ ...prev, desktopNotifications: false }));
+        setTestNotification('Desktop notifications were denied.');
+        setTimeout(() => setTestNotification(''), 5000);
       }
     } catch (error) {
-      return;
+      setTestNotification('Failed to enable desktop notifications.');
+      setTimeout(() => setTestNotification(''), 5000);
     } finally {
       setIsLoading(false);
     }
@@ -87,6 +94,8 @@ const NotificationSettings = () => {
 
   const testDesktopNotification = async () => {
     if (notificationPermission !== 'granted') {
+      setTestNotification('Please enable desktop notifications first.');
+      setTimeout(() => setTestNotification(''), 5000);
       return;
     }
 
@@ -105,10 +114,14 @@ const NotificationSettings = () => {
 
   const testEmailNotification = async () => {
     if (!userEmail) {
+      setTestNotification('Please enter your email address first.');
+      setTimeout(() => setTestNotification(''), 5000);
       return;
     }
 
     if (!settings.emailNotifications) {
+      setTestNotification('Please enable email notifications first.');
+      setTimeout(() => setTestNotification(''), 5000);
       return;
     }
 
@@ -129,7 +142,7 @@ const NotificationSettings = () => {
       setTestNotification('Failed to send test email.');
     } finally {
       setIsLoading(false);
-      setTimeout(() => setTestNotification(''), 3000);
+      setTimeout(() => setTestNotification(''), 5000);
     }
   };
 

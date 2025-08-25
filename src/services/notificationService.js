@@ -27,6 +27,7 @@ class NotificationService {
       setTimeout(() => notification.close(), 10000);
       return notification;
     } catch (error) {
+      // Error showing desktop notification
       return false;
     }
   }
@@ -71,6 +72,7 @@ class NotificationService {
       await emailjs.send(serviceId, templateId, templateParams);
       return true;
     } catch (error) {
+      // Error sending email notification
       return false;
     }
   }
@@ -96,6 +98,7 @@ class NotificationService {
     try {
       return new Notification(title, { icon: '/favicon.ico', badge: '/favicon.ico', ...options });
     } catch (error) {
+      // Error showing browser notification
       return false;
     }
   }
@@ -105,10 +108,10 @@ class NotificationService {
       const audio = new Audio('/notification-sound.mp3');
       audio.volume = 0.5;
       audio.play().catch(() => {
-        // Ignore play errors
+        // Audio play failed
       });
-    } catch (_) {
-      // Ignore audio creation errors
+    } catch (error) {
+      // Audio creation failed
     }
   }
 

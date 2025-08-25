@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
 import {
   FaCalendarAlt, FaGoogle,
 } from 'react-icons/fa';
+import PropTypes from 'prop-types';
 import { useTodo } from '../context/TodoContext';
 import 'react-datepicker/dist/react-datepicker.css';
 import './InputTodo.css';
@@ -334,6 +334,8 @@ const InputTodo = ({ onTaskAdded }) => {
   );
 };
 
+export default InputTodo;
+
 InputTodo.propTypes = {
   onTaskAdded: PropTypes.func,
 };
@@ -341,5 +343,3 @@ InputTodo.propTypes = {
 InputTodo.defaultProps = {
   onTaskAdded: null,
 };
-
-export default InputTodo;

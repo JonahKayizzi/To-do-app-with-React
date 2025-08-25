@@ -1,9 +1,9 @@
 import React, {
   createContext, useContext, useReducer, useEffect, useState,
 } from 'react';
+import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
-import PropTypes from 'prop-types';
 
 const TodoContext = createContext();
 
@@ -67,16 +67,19 @@ const todoReducer = (state, action) => {
       return {
         ...state,
         subcategories: state.subcategories.map((sub) => (
-          sub.id === action.payload.id ? action.payload : sub)),
+          sub.id === action.payload.id ? action.payload : sub
+        )),
       };
 
     case 'DELETE_SUBCATEGORY':
       return {
         ...state,
         subcategories: state.subcategories.filter((sub) => sub.id !== action.payload),
-        todos: state.todos.map((todo) => (todo.subcategoryId === action.payload
-          ? { ...todo, subcategoryId: null }
-          : todo)),
+        todos: state.todos.map((todo) => (
+          todo.subcategoryId === action.payload
+            ? { ...todo, subcategoryId: null }
+            : todo
+        )),
       };
 
     case 'ADD_TODO':
@@ -88,7 +91,9 @@ const todoReducer = (state, action) => {
     case 'UPDATE_TODO':
       return {
         ...state,
-        todos: state.todos.map((todo) => (todo.id === action.payload.id ? action.payload : todo)),
+        todos: state.todos.map((todo) => (
+          todo.id === action.payload.id ? action.payload : todo
+        )),
       };
 
     case 'DELETE_TODO':
@@ -100,9 +105,11 @@ const todoReducer = (state, action) => {
     case 'TOGGLE_TODO':
       return {
         ...state,
-        todos: state.todos.map((todo) => (todo.id === action.payload
-          ? { ...todo, completed: !todo.completed }
-          : todo)),
+        todos: state.todos.map((todo) => (
+          todo.id === action.payload
+            ? { ...todo, completed: !todo.completed }
+            : todo
+        )),
       };
 
     case 'SET_GOOGLE_CALENDAR_EVENTS':
@@ -153,66 +160,50 @@ const todoReducer = (state, action) => {
   }
 };
 
-const TodoProvider = ({ children }) => {
+export const TodoProvider = ({ children }) => {
   const [state, dispatch] = useReducer(todoReducer, initialState);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load data from localStorage on component mount
+  // Load data from localStorage on mount
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Load todos
-        const storedTodos = localStorage.getItem('todos');
-        if (storedTodos) {
-          const todos = JSON.parse(storedTodos);
-          dispatch({ type: 'SET_TODOS', payload: todos });
-        }
+    try {
+      const savedState = localStorage.getItem('todoAppState');
+      if (savedState) {
+        const parsedState = JSON.parse(savedState);
 
-        // Load categories
-        const storedCategories = localStorage.getItem('categories');
-        if (storedCategories) {
-          const categories = JSON.parse(storedCategories);
-          dispatch({ type: 'SET_CATEGORIES', payload: categories });
+        // Load each data type individually
+        if (parsedState.todos && Array.isArray(parsedState.todos)) {
+          dispatch({ type: 'SET_TODOS', payload: parsedState.todos });
         }
-
-        // Load subcategories
-        const storedSubcategories = localStorage.getItem('subcategories');
-        if (storedSubcategories) {
-          const subcategories = JSON.parse(storedSubcategories);
-          dispatch({ type: 'SET_SUBCATEGORIES', payload: subcategories });
+        if (parsedState.categories && Array.isArray(parsedState.categories)) {
+          dispatch({ type: 'SET_CATEGORIES', payload: parsedState.categories });
         }
-
-        // Load Google Calendar events
-        const storedEvents = localStorage.getItem('googleCalendarEvents');
-        if (storedEvents) {
-          const events = JSON.parse(storedEvents);
-          dispatch({ type: 'SET_GOOGLECALENDAREVENTS', payload: events });
+        if (parsedState.subcategories && Array.isArray(parsedState.subcategories)) {
+          dispatch({ type: 'SET_SUBCATEGORIES', payload: parsedState.subcategories });
         }
-
-        setIsInitialized(true);
-      } catch (error) {
-        setIsInitialized(true);
+        if (parsedState.googleCalendarEvents && Array.isArray(parsedState.googleCalendarEvents)) {
+          dispatch({ type: 'SET_GOOGLECALENDAREVENTS', payload: parsedState.googleCalendarEvents });
+        }
       }
-    };
-
-    loadData();
+    } catch (error) {
+      // Clear corrupted data
+      localStorage.removeItem('todoAppState');
+    } finally {
+      setIsInitialized(true);
+    }
   }, []);
 
-  // Save data to localStorage whenever state changes
+  // Save data to localStorage whenever state changes (but not during initial load)
   useEffect(() => {
-    if (!isInitialized) return;
+    if (!isInitialized) return; // Don't save during initial load
 
     try {
-      localStorage.setItem('todos', JSON.stringify(state.todos));
-      localStorage.setItem('categories', JSON.stringify(state.categories));
-      localStorage.setItem('subcategories', JSON.stringify(state.subcategories));
-      localStorage.setItem(
-        'googleCalendarEvents',
-        JSON.stringify(state.googleCalendarEvents),
-      );
+      const stateToSave = { ...state };
+      delete stateToSave.notifications; // Don't save notifications
+
+      localStorage.setItem('todoAppState', JSON.stringify(stateToSave));
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error saving data to localStorage:', error);
+      // Error saving to localStorage - data may not persist
     }
   }, [state, isInitialized]);
 
@@ -220,9 +211,9 @@ const TodoProvider = ({ children }) => {
   useEffect(() => {
     const checkDueTasks = () => {
       const now = moment();
-      const dueTasks = state.todos.filter((todo) => !todo.completed && todo.deadline && moment(
-        todo.deadline,
-      ).isAfter(now));
+      const dueTasks = state.todos.filter(
+        (todo) => !todo.completed && todo.deadline && moment(todo.deadline).isAfter(now),
+      );
 
       dueTasks.forEach((todo) => {
         const deadline = moment(todo.deadline);
@@ -274,154 +265,115 @@ const TodoProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [state.todos]);
 
-  const addTodo = (todo) => {
-    const newTodo = {
-      ...todo,
-      id: Date.now().toString(),
-    };
-    dispatch({ type: 'ADD_TODO', payload: newTodo });
-  };
-
-  const updateTodo = (updatedTodo) => {
-    dispatch({ type: 'UPDATE_TODO', payload: updatedTodo });
-  };
-
-  const deleteTodo = (todoId) => {
-    dispatch({ type: 'DELETE_TODO', payload: todoId });
-  };
-
-  const toggleTodo = (todoId) => {
-    dispatch({ type: 'TOGGLE_TODO', payload: todoId });
-  };
-
-  const addCategory = (name) => {
-    const newCategory = {
-      id: Date.now().toString(),
-      name,
-      color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-    };
-    dispatch({ type: 'ADD_CATEGORY', payload: newCategory });
-  };
-
-  const updateCategory = (updatedCategory) => {
-    dispatch({ type: 'UPDATE_CATEGORY', payload: updatedCategory });
-  };
-
-  const deleteCategory = (categoryId) => {
-    dispatch({ type: 'DELETE_CATEGORY', payload: categoryId });
-  };
-
-  const addSubcategory = (categoryId, name) => {
-    const newSubcategory = {
-      id: Date.now().toString(),
-      name,
-      categoryId,
-    };
-    dispatch({ type: 'ADD_SUBCATEGORY', payload: newSubcategory });
-  };
-
-  const updateSubcategory = (updatedSubcategory) => {
-    dispatch({ type: 'UPDATE_SUBCATEGORY', payload: updatedSubcategory });
-  };
-
-  const deleteSubcategory = (subcategoryId) => {
-    dispatch({ type: 'DELETE_SUBCATEGORY', payload: subcategoryId });
-  };
-
-  const setGoogleCalendarEvents = (events) => {
-    dispatch({ type: 'SET_GOOGLECALENDAREVENTS', payload: events });
-  };
-
-  const getTodosByCategory = () => {
-    const grouped = {};
-    state.categories.forEach((category) => {
-      const categoryTodos = state.todos.filter(
-        (todo) => todo.categoryId === category.id,
-      );
-      const subcategoryGroups = {};
-
-      state.subcategories
-        .filter((sub) => sub.categoryId === category.id)
-        .forEach((subcategory) => {
-          const subTodos = categoryTodos.filter(
-            (todo) => todo.subcategoryId === subcategory.id,
-          );
-          if (subTodos.length > 0) {
-            subcategoryGroups[subcategory.id] = {
-              subcategory,
-              todos: subTodos,
-            };
-          }
-        });
-
-      const uncategorizedTodos = categoryTodos.filter(
-        (todo) => !todo.subcategoryId,
-      );
-
-      grouped[category.id] = {
-        category,
-        subcategories: subcategoryGroups,
-        todos: uncategorizedTodos,
-      };
-    });
-    return grouped;
-  };
-
-  const getDueTasks = () => {
-    const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    return state.todos.filter((todo) => {
-      if (!todo.deadline || todo.completed) return false;
-      const deadline = new Date(todo.deadline);
-      return deadline >= now && deadline <= tomorrow;
-    });
-  };
-
-  const getOverdueTasks = () => {
-    const now = new Date();
-    return state.todos.filter((todo) => {
-      if (!todo.deadline || todo.completed) return false;
-      return new Date(todo.deadline) < now;
-    });
-  };
-
   const value = {
     state,
-    todos: state.todos,
-    categories: state.categories,
-    subcategories: state.subcategories,
-    googleCalendarEvents: state.googleCalendarEvents,
-    addTodo,
-    updateTodo,
-    deleteTodo,
-    toggleTodo,
-    addCategory,
-    updateCategory,
-    deleteCategory,
-    addSubcategory,
-    updateSubcategory,
-    deleteSubcategory,
-    setGoogleCalendarEvents,
-    getTodosByCategory,
-    getDueTasks,
-    getOverdueTasks,
+    dispatch,
+    addCategory: (name, color) => {
+      const category = { id: uuidv4(), name, color };
+      dispatch({
+        type: 'ADD_CATEGORY',
+        payload: category,
+      });
+    },
+    updateCategory: (category) => {
+      dispatch({ type: 'UPDATE_CATEGORY', payload: category });
+    },
+    deleteCategory: (id) => {
+      dispatch({ type: 'DELETE_CATEGORY', payload: id });
+    },
+    addSubcategory: (name, categoryId) => {
+      dispatch({
+        type: 'ADD_SUBCATEGORY',
+        payload: { id: uuidv4(), name, categoryId },
+      });
+    },
+    updateSubcategory: (subcategory) => {
+      dispatch({ type: 'UPDATE_SUBCATEGORY', payload: subcategory });
+    },
+    deleteSubcategory: (id) => {
+      dispatch({ type: 'DELETE_SUBCATEGORY', payload: id });
+    },
+    addTodo: (todo) => {
+      const newTodo = {
+        ...todo, id: uuidv4(), completed: false, createdAt: Date.now(),
+      };
+      dispatch({
+        type: 'ADD_TODO',
+        payload: newTodo,
+      });
+    },
+    updateTodo: (todo) => {
+      dispatch({ type: 'UPDATE_TODO', payload: todo });
+    },
+    deleteTodo: (id) => {
+      dispatch({ type: 'DELETE_TODO', payload: id });
+    },
+    toggleTodo: (id) => {
+      dispatch({ type: 'TOGGLE_TODO', payload: id });
+    },
+    getTodosByCategory: () => {
+      const grouped = {};
+      state.categories.forEach((category) => {
+        grouped[category.id] = {
+          category,
+          subcategories: {},
+          todos: [],
+        };
+      });
+
+      state.subcategories.forEach((subcategory) => {
+        if (grouped[subcategory.categoryId]) {
+          grouped[subcategory.categoryId].subcategories[subcategory.id] = {
+            subcategory,
+            todos: [],
+          };
+        }
+      });
+
+      state.todos.forEach((todo) => {
+        if (todo.categoryId && grouped[todo.categoryId]) {
+          grouped[todo.categoryId].todos.push(todo);
+          if (todo.subcategoryId && grouped[todo.categoryId].subcategories[todo.subcategoryId]) {
+            grouped[todo.categoryId].subcategories[todo.subcategoryId].todos.push(todo);
+          }
+        }
+      });
+
+      return grouped;
+    },
+    getDueTasks: () => {
+      const now = moment();
+      return state.todos
+        .filter(
+          (todo) => !todo.completed && todo.deadline && moment(todo.deadline).isAfter(now),
+        )
+        .sort((a, b) => moment(a.deadline).diff(moment(b.deadline)));
+    },
+    getOverdueTasks: () => {
+      const now = moment();
+      return state.todos
+        .filter(
+          (todo) => !todo.completed && todo.deadline && moment(todo.deadline).isBefore(now),
+        )
+        .sort((a, b) => moment(b.deadline).diff(moment(a.deadline)));
+    },
   };
 
-  return <TodoContext.Provider value={value}>{children}</TodoContext.Provider>;
+  return (
+    <TodoContext.Provider value={value}>
+      {children}
+    </TodoContext.Provider>
+  );
 };
 
 TodoProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const useTodo = () => {
+export const useTodo = () => {
   const context = useContext(TodoContext);
   if (!context) {
     throw new Error('useTodo must be used within a TodoProvider');
   }
   return context;
 };
-
-export { TodoContext, TodoProvider, useTodo };

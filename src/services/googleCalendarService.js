@@ -58,20 +58,19 @@ class GoogleCalendarService {
       await auth.signIn();
       return true;
     } catch (error) {
+      // Error signing in
       return false;
     }
   }
 
   async signOut() {
+    if (!this.isInitialized) return;
     try {
-      if (this.gapi && this.gapi.auth2) {
-        await this.gapi.auth2.getAuthInstance().signOut();
-        this.isSignedIn = false;
-        return true;
-      }
-      return false;
+      const auth = this.gapi?.auth2?.getAuthInstance();
+      if (!auth) return;
+      await auth.signOut();
     } catch (error) {
-      return false;
+      // Error signing out
     }
   }
 
@@ -101,16 +100,17 @@ class GoogleCalendarService {
 
   async addEventToCalendar(eventData) {
     if (!this.isSignedIn) throw new Error('User not signed in');
+    const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
     const event = {
       summary: eventData.title,
       description: eventData.description || '',
       start: {
         dateTime: eventData.startTime,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timeZone,
       },
       end: {
         dateTime: eventData.endTime || moment(eventData.startTime).add(1, 'hour').toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timeZone,
       },
       reminders: {
         useDefault: false,
@@ -127,16 +127,17 @@ class GoogleCalendarService {
 
   async updateEvent(eventId, eventData) {
     if (!this.isSignedIn) throw new Error('User not signed in');
+    const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
     const event = {
       summary: eventData.title,
       description: eventData.description || '',
       start: {
         dateTime: eventData.startTime,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timeZone,
       },
       end: {
         dateTime: eventData.endTime || moment(eventData.startTime).add(1, 'hour').toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timeZone,
       },
     };
     if (eventData.location) event.location = eventData.location;
@@ -152,41 +153,27 @@ class GoogleCalendarService {
 
   // Convert todo to calendar event
   static todoToCalendarEvent(todo) {
+    const startTime = moment(todo.deadline).subtract(1, 'hour').toISOString();
+    const endTime = moment(todo.deadline).toISOString();
     return {
-      summary: todo.title,
+      title: todo.title,
       description: todo.description || '',
-      start: {
-        dateTime: todo.deadline || new Date().toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      end: {
-        dateTime: todo.deadline
-          ? new Date(new Date(todo.deadline).getTime() + 60 * 60 * 1000).toISOString()
-          : new Date(Date.now() + 60 * 60 * 1000).toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
+      startTime,
+      endTime,
       location: todo.location || '',
-      reminders: {
-        useDefault: false,
-        overrides: [
-          { method: 'email', minutes: 24 * 60 },
-          { method: 'popup', minutes: 30 },
-        ],
-      },
     };
   }
 
   // Convert calendar event to todo
   static calendarEventToTodo(event) {
     return {
-      id: event.id,
-      title: event.summary || 'Untitled Event',
-      description: event.description || '',
-      deadline: event.start?.dateTime || event.start?.date || null,
-      location: event.location || '',
+      title: event.title,
+      description: event.description,
+      deadline: event.startTime,
+      location: event.location,
+      categoryId: null,
+      subcategoryId: null,
       priority: 'medium',
-      completed: false,
-      createdAt: new Date().toISOString(),
     };
   }
 }

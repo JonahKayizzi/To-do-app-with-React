@@ -1,12 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { FaPlus } from 'react-icons/fa';
 import './AddTaskButton.css';
+import PropTypes from 'prop-types';
 
 const AddTaskButton = ({ onClick }) => (
-  <button type="button" className="add-task-button" onClick={onClick}>
-    <FaPlus />
-    Add Task
+  <button type="button" className="add-task-btn" onClick={onClick}>
+    <FaPlus className="add-task-icon" />
+    <span>Add Task</span>
   </button>
 );
 
