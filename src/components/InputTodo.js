@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
 import {
-  FaCalendarAlt, FaClock, FaExclamationTriangle, FaGoogle,
+  FaCalendarAlt, FaGoogle,
 } from 'react-icons/fa';
 import { useTodo } from '../context/TodoContext';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -231,8 +232,9 @@ const InputTodo = ({ onTaskAdded }) => {
 
         <div className="form-row">
           <div className="form-group checkbox-group">
-            <label className="checkbox-label">
+            <label className="checkbox-label" htmlFor="add-to-calendar">
               <input
+                id="add-to-calendar"
                 type="checkbox"
                 checked={addToCalendar}
                 onChange={(e) => setAddToCalendar(e.target.checked)}
@@ -330,6 +332,14 @@ const InputTodo = ({ onTaskAdded }) => {
       )}
     </div>
   );
+};
+
+InputTodo.propTypes = {
+  onTaskAdded: PropTypes.func,
+};
+
+InputTodo.defaultProps = {
+  onTaskAdded: null,
 };
 
 export default InputTodo;

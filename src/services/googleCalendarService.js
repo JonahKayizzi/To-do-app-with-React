@@ -58,20 +58,19 @@ class GoogleCalendarService {
       await auth.signIn();
       return true;
     } catch (error) {
-      console.error('Error signing in:', error);
       return false;
     }
   }
 
   async signOut() {
-    if (!this.isInitialized) return;
     try {
-      const auth = this.gapi?.auth2?.getAuthInstance();
-      if (!auth) return false;
-      await auth.signOut();
-      return true;
+      if (this.gapi && this.gapi.auth2) {
+        await this.gapi.auth2.getAuthInstance().signOut();
+        this.isSignedIn = false;
+        return true;
+      }
+      return false;
     } catch (error) {
-      console.error('Error signing out:', error);
       return false;
     }
   }
@@ -105,9 +104,21 @@ class GoogleCalendarService {
     const event = {
       summary: eventData.title,
       description: eventData.description || '',
-      start: { dateTime: eventData.startTime, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
-      end: { dateTime: eventData.endTime || moment(eventData.startTime).add(1, 'hour').toISOString(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
-      reminders: { useDefault: false, overrides: [{ method: 'email', minutes: 24 * 60 }, { method: 'popup', minutes: 60 }] },
+      start: {
+        dateTime: eventData.startTime,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+      end: {
+        dateTime: eventData.endTime || moment(eventData.startTime).add(1, 'hour').toISOString(),
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'email', minutes: 24 * 60 },
+          { method: 'popup', minutes: 60 },
+        ],
+      },
     };
     if (eventData.location) event.location = eventData.location;
     const response = await this.gapi.client.calendar.events.insert({ calendarId: 'primary', resource: event });
@@ -119,8 +130,14 @@ class GoogleCalendarService {
     const event = {
       summary: eventData.title,
       description: eventData.description || '',
-      start: { dateTime: eventData.startTime, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
-      end: { dateTime: eventData.endTime || moment(eventData.startTime).add(1, 'hour').toISOString(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+      start: {
+        dateTime: eventData.startTime,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+      end: {
+        dateTime: eventData.endTime || moment(eventData.startTime).add(1, 'hour').toISOString(),
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
     };
     if (eventData.location) event.location = eventData.location;
     const response = await this.gapi.client.calendar.events.update({ calendarId: 'primary', eventId, resource: event });
@@ -134,18 +151,42 @@ class GoogleCalendarService {
   }
 
   // Convert todo to calendar event
-  todoToCalendarEvent(todo) {
-    const startTime = moment(todo.deadline).subtract(1, 'hour').toISOString();
-    const endTime = moment(todo.deadline).toISOString();
+  static todoToCalendarEvent(todo) {
     return {
-      title: todo.title, description: todo.description || '', startTime, endTime, location: todo.location || '',
+      summary: todo.title,
+      description: todo.description || '',
+      start: {
+        dateTime: todo.deadline || new Date().toISOString(),
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+      end: {
+        dateTime: todo.deadline
+          ? new Date(new Date(todo.deadline).getTime() + 60 * 60 * 1000).toISOString()
+          : new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+      location: todo.location || '',
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'email', minutes: 24 * 60 },
+          { method: 'popup', minutes: 30 },
+        ],
+      },
     };
   }
 
   // Convert calendar event to todo
-  calendarEventToTodo(event) {
+  static calendarEventToTodo(event) {
     return {
-      title: event.title, description: event.description, deadline: event.startTime, location: event.location, categoryId: null, subcategoryId: null, priority: 'medium',
+      id: event.id,
+      title: event.summary || 'Untitled Event',
+      description: event.description || '',
+      deadline: event.start?.dateTime || event.start?.date || null,
+      location: event.location || '',
+      priority: 'medium',
+      completed: false,
+      createdAt: new Date().toISOString(),
     };
   }
 }

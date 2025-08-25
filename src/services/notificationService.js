@@ -27,7 +27,6 @@ class NotificationService {
       setTimeout(() => notification.close(), 10000);
       return notification;
     } catch (error) {
-      console.error('Error showing desktop notification:', error);
       return false;
     }
   }
@@ -51,7 +50,7 @@ class NotificationService {
     }
   }
 
-  ensureEmailEnv() {
+  static ensureEmailEnv() {
     const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID;
     const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
     const userId = process.env.REACT_APP_EMAILJS_USER_ID;
@@ -63,7 +62,7 @@ class NotificationService {
 
   async sendEmailNotification(to, subject, message) {
     try {
-      const { serviceId, templateId, userId } = this.ensureEmailEnv();
+      const { serviceId, templateId, userId } = NotificationService.ensureEmailEnv();
       if (!this.emailjsInitialized) {
         emailjs.init(userId);
         this.emailjsInitialized = true;
@@ -72,7 +71,6 @@ class NotificationService {
       await emailjs.send(serviceId, templateId, templateParams);
       return true;
     } catch (error) {
-      console.error('Error sending email notification:', error);
       return false;
     }
   }
@@ -98,20 +96,23 @@ class NotificationService {
     try {
       return new Notification(title, { icon: '/favicon.ico', badge: '/favicon.ico', ...options });
     } catch (error) {
-      console.error('Error showing browser notification:', error);
       return false;
     }
   }
 
-  playNotificationSound() {
+  static playNotificationSound() {
     try {
       const audio = new Audio('/notification-sound.mp3');
       audio.volume = 0.5;
-      audio.play().catch(() => {});
-    } catch (_) {}
+      audio.play().catch(() => {
+        // Ignore play errors
+      });
+    } catch (_) {
+      // Ignore audio creation errors
+    }
   }
 
-  showToastNotification(message, type = 'info') {
+  static showToastNotification(message, type = 'info') {
     const event = new CustomEvent('showToast', { detail: { message, type } });
     window.dispatchEvent(event);
   }

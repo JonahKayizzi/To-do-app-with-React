@@ -23,6 +23,7 @@ const SummaryStatistics = () => {
       icon: <FaTasks />,
       color: '#3b82f6',
       bgColor: '#eff6ff',
+      label: 'Total Tasks',
     },
     {
       title: 'Completed',
@@ -30,6 +31,7 @@ const SummaryStatistics = () => {
       icon: <FaCheckCircle />,
       color: '#10b981',
       bgColor: '#ecfdf5',
+      label: 'Completed',
     },
     {
       title: 'Pending',
@@ -37,6 +39,7 @@ const SummaryStatistics = () => {
       icon: <FaClock />,
       color: '#f59e0b',
       bgColor: '#fffbeb',
+      label: 'Pending',
     },
     {
       title: 'Due Soon',
@@ -44,6 +47,7 @@ const SummaryStatistics = () => {
       icon: <FaCalendarAlt />,
       color: '#8b5cf6',
       bgColor: '#f3f4f6',
+      label: 'Due Soon',
     },
     {
       title: 'Overdue',
@@ -51,6 +55,7 @@ const SummaryStatistics = () => {
       icon: <FaExclamationTriangle />,
       color: '#ef4444',
       bgColor: '#fef2f2',
+      label: 'Overdue',
     },
   ];
 
@@ -80,20 +85,14 @@ const SummaryStatistics = () => {
       </div>
 
       <div className="stats-grid">
-        {stats.map((stat, index) => (
-          <div key={index} className="stat-card">
-            <div
-              className="stat-icon"
-              style={{
-                backgroundColor: stat.bgColor,
-                color: stat.color,
-              }}
-            >
+        {stats.map((stat) => (
+          <div key={`stat-${stat.label}`} className="stat-card">
+            <div className="stat-icon" style={{ backgroundColor: stat.color }}>
               {stat.icon}
             </div>
             <div className="stat-content">
-              <div className="stat-value">{stat.value}</div>
-              <div className="stat-title">{stat.title}</div>
+              <h3>{stat.value}</h3>
+              <p>{stat.label}</p>
             </div>
           </div>
         ))}

@@ -65,7 +65,6 @@ const NotificationSettings = () => {
 
   const requestNotificationPermission = async () => {
     if (!('Notification' in window)) {
-      alert('Desktop notifications are not supported in this browser.');
       return;
     }
 
@@ -76,14 +75,11 @@ const NotificationSettings = () => {
 
       if (permission === 'granted') {
         setSettings((prev) => ({ ...prev, desktopNotifications: true }));
-        alert('Desktop notifications enabled!');
       } else {
         setSettings((prev) => ({ ...prev, desktopNotifications: false }));
-        alert('Desktop notifications were denied.');
       }
     } catch (error) {
-      console.error('Error requesting notification permission:', error);
-      alert('Failed to enable desktop notifications.');
+      return;
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +87,6 @@ const NotificationSettings = () => {
 
   const testDesktopNotification = async () => {
     if (notificationPermission !== 'granted') {
-      alert('Please enable desktop notifications first.');
       return;
     }
 
@@ -110,12 +105,10 @@ const NotificationSettings = () => {
 
   const testEmailNotification = async () => {
     if (!userEmail) {
-      alert('Please enter your email address first.');
       return;
     }
 
     if (!settings.emailNotifications) {
-      alert('Please enable email notifications first.');
       return;
     }
 
@@ -176,8 +169,9 @@ const NotificationSettings = () => {
           </div>
 
           <div className="setting-controls">
-            <label className="setting-toggle">
+            <label className="setting-toggle" htmlFor="desktop-notifications">
               <input
+                id="desktop-notifications"
                 type="checkbox"
                 checked={settings.desktopNotifications && notificationPermission === 'granted'}
                 onChange={() => {}}
@@ -189,6 +183,7 @@ const NotificationSettings = () => {
 
             {notificationPermission !== 'granted' && (
               <button
+                type="button"
                 onClick={requestNotificationPermission}
                 disabled={isLoading}
                 className="permission-btn"
@@ -199,6 +194,7 @@ const NotificationSettings = () => {
 
             {notificationPermission === 'granted' && (
               <button
+                type="button"
                 onClick={testDesktopNotification}
                 className="test-btn"
               >
@@ -216,8 +212,9 @@ const NotificationSettings = () => {
           </div>
 
           <div className="setting-controls">
-            <label className="setting-toggle">
+            <label className="setting-toggle" htmlFor="email-notifications">
               <input
+                id="email-notifications"
                 type="checkbox"
                 checked={settings.emailNotifications}
                 onChange={() => handleSettingChange('emailNotifications')}
@@ -236,6 +233,7 @@ const NotificationSettings = () => {
                   className="email-input"
                 />
                 <button
+                  type="button"
                   onClick={testEmailNotification}
                   disabled={isLoading || !userEmail}
                   className="test-btn"
@@ -255,8 +253,9 @@ const NotificationSettings = () => {
           </div>
 
           <div className="setting-controls">
-            <label className="setting-toggle">
+            <label className="setting-toggle" htmlFor="sound-notifications">
               <input
+                id="sound-notifications"
                 type="checkbox"
                 checked={settings.soundNotifications}
                 onChange={() => handleSettingChange('soundNotifications')}
@@ -275,8 +274,9 @@ const NotificationSettings = () => {
           </div>
 
           <div className="timing-controls">
-            <label className="timing-toggle">
+            <label className="timing-toggle" htmlFor="due-1-day">
               <input
+                id="due-1-day"
                 type="checkbox"
                 checked={settings.due1Day}
                 onChange={() => handleSettingChange('due1Day')}
@@ -285,8 +285,9 @@ const NotificationSettings = () => {
               Notify 1 day before deadline
             </label>
 
-            <label className="timing-toggle">
+            <label className="timing-toggle" htmlFor="due-6-hours">
               <input
+                id="due-6-hours"
                 type="checkbox"
                 checked={settings.due6Hours}
                 onChange={() => handleSettingChange('due6Hours')}
@@ -295,8 +296,9 @@ const NotificationSettings = () => {
               Notify 6 hours before deadline
             </label>
 
-            <label className="timing-toggle">
+            <label className="timing-toggle" htmlFor="due-1-hour">
               <input
+                id="due-1-hour"
                 type="checkbox"
                 checked={settings.due1Hour}
                 onChange={() => handleSettingChange('due1Hour')}
@@ -305,8 +307,9 @@ const NotificationSettings = () => {
               Notify 1 hour before deadline
             </label>
 
-            <label className="timing-toggle">
+            <label className="timing-toggle" htmlFor="overdue">
               <input
+                id="overdue"
                 type="checkbox"
                 checked={settings.overdue}
                 onChange={() => handleSettingChange('overdue')}

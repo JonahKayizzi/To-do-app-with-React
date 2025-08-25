@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import GoogleCalendarService from '../services/googleCalendarService';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  FaCalendarAlt, FaSignInAlt, FaSignOutAlt, FaSync, FaPlus,
+} from 'react-icons/fa';
 import './GoogleCalendarIntegration.css';
 
 const GoogleCalendarIntegration = () => {
@@ -7,165 +9,199 @@ const GoogleCalendarIntegration = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
-  const [calendarService] = useState(() => new GoogleCalendarService());
+  const [calendarService, setCalendarService] = useState(null);
+
+  const loadEvents = useCallback(async () => {
+    if (!calendarService) return;
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      const calendarEvents = await calendarService.getEvents();
+      setEvents(calendarEvents);
+    } catch (err) {
+      setError('Failed to load calendar events');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [calendarService]);
 
   useEffect(() => {
-    const initializeService = async () => {
+    const initService = async () => {
       try {
-        await calendarService.initialize();
-        setIsSignedIn(calendarService.isSignedIn);
+        const { GoogleCalendarService } = await import('../services/googleCalendarService');
+        const service = new GoogleCalendarService();
+        setCalendarService(service);
+
+        // Check if user is already signed in
+        const signedIn = await service.isSignedIn();
+        setIsSignedIn(signedIn);
+
+        if (signedIn) {
+          loadEvents();
+        }
       } catch (err) {
         setError('Failed to initialize Google Calendar service');
-        console.error('Initialization error:', err);
       }
     };
 
-    initializeService();
-  }, [calendarService]);
+    initService();
+  }, [loadEvents]);
 
   const handleSignIn = async () => {
-    setIsLoading(true);
-    setError(null);
+    if (!calendarService) return;
+
     try {
-      const success = await calendarService.signIn();
-      if (success) {
-        setIsSignedIn(true);
-        await loadEvents();
-      } else {
-        setError('Failed to sign in to Google Calendar');
-      }
+      setIsLoading(true);
+      setError(null);
+      await calendarService.signIn();
+      setIsSignedIn(true);
+      await loadEvents();
     } catch (err) {
-      setError('Error signing in to Google Calendar');
-      console.error('Sign in error:', err);
+      setError('Failed to sign in to Google Calendar');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleSignOut = async () => {
-    setIsLoading(true);
+    if (!calendarService) return;
+
     try {
+      setIsLoading(true);
+      setError(null);
       await calendarService.signOut();
       setIsSignedIn(false);
       setEvents([]);
     } catch (err) {
-      setError('Error signing out from Google Calendar');
-      console.error('Sign out error:', err);
+      setError('Failed to sign out from Google Calendar');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const loadEvents = async () => {
+  const handleAddEvent = async () => {
+    if (!calendarService) return;
+
     try {
-      const calendarEvents = await calendarService.getCalendarEvents();
-      setEvents(calendarEvents);
+      setIsLoading(true);
+      setError(null);
+      // Example: Add a new event
+      const newEvent = {
+        title: 'New Task',
+        description: 'Task description',
+        startTime: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
+        endTime: new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 60 * 1000), // Tomorrow + 1 hour
+      };
+
+      await calendarService.addEvent(newEvent);
+      await loadEvents(); // Refresh events
     } catch (err) {
-      setError('Failed to load calendar events');
-      console.error('Load events error:', err);
+      setError('Failed to add calendar event');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const formatEventTime = (timeString) => {
-    if (!timeString) return '';
-    const date = new Date(timeString);
-    return date.toLocaleString();
+  const renderEvents = () => {
+    if (isLoading) {
+      return <p>Loading events...</p>;
+    }
+    if (events.length > 0) {
+      return (
+        <ul className="events-list">
+          {events.map((event) => (
+            <li key={`${event.title}-${event.startTime}`} className="event-item">
+              <strong>{event.title}</strong>
+              {event.description && <p>{event.description}</p>}
+              <small>
+                {new Date(event.startTime).toLocaleString()}
+              </small>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    return <p>No upcoming events</p>;
   };
+
+  if (!calendarService) {
+    return (
+      <div className="calendar-integration">
+        <div className="calendar-header">
+          <FaCalendarAlt />
+          <h3>Google Calendar</h3>
+        </div>
+        <div className="calendar-content">
+          <p>Initializing calendar service...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="calendar-integration">
-      <div className="integration-header">
-        <h3>
-          <span className="google-icon">📅</span>
-          Google Calendar Integration
-        </h3>
-        {isSignedIn && (
-          <button
-            className="sign-out-btn"
-            onClick={handleSignOut}
-            disabled={isLoading}
-          >
-            <span>🚪</span>
-            Sign Out
-          </button>
-        )}
+      <div className="calendar-header">
+        <FaCalendarAlt />
+        <h3>Google Calendar</h3>
       </div>
 
-      <div className="integration-content">
+      <div className="calendar-content">
+        {error && (
+          <div className="calendar-error">
+            <p>{error}</p>
+          </div>
+        )}
+
         {!isSignedIn ? (
-          <div>
-            <p>
-              Connect your Google Calendar to view and manage your events alongside your todos.
-            </p>
+          <div className="calendar-signin">
+            <p>Connect your Google Calendar to sync tasks and events</p>
             <button
-              className="sign-in-btn"
+              type="button"
+              className="calendar-btn primary"
               onClick={handleSignIn}
               disabled={isLoading}
             >
-              <span>🔑</span>
-              {isLoading ? 'Signing In...' : 'Sign In with Google'}
+              <FaSignInAlt />
+              {isLoading ? 'Signing In...' : 'Sign In'}
             </button>
           </div>
         ) : (
-          <div>
-            <p>Successfully connected to Google Calendar!</p>
-            <button
-              className="sign-in-btn"
-              onClick={loadEvents}
-              disabled={isLoading}
-              style={{ marginBottom: '20px' }}
-            >
-              <span>🔄</span>
-              {isLoading ? 'Loading...' : 'Refresh Events'}
-            </button>
-          </div>
-        )}
-
-        {error && (
-          <div style={{ color: '#dc2626', marginTop: '16px' }}>
-            {error}
-          </div>
-        )}
-
-        {isSignedIn && events.length > 0 && (
-          <div className="integration-actions">
-            <h4 style={{ width: '100%', marginBottom: '16px' }}>Upcoming Events:</h4>
-            {events.slice(0, 5).map((event) => (
-              <div
-                key={event.id}
-                style={{
-                  background: '#f8fafc',
-                  padding: '16px',
-                  borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
-                  width: '100%',
-                  textAlign: 'left',
-                }}
+          <div className="calendar-signedin">
+            <div className="calendar-controls">
+              <button
+                type="button"
+                className="calendar-btn secondary"
+                onClick={loadEvents}
+                disabled={isLoading}
               >
-                <h5 style={{ margin: '0 0 8px 0', color: '#1e293b' }}>
-                  {event.title}
-                </h5>
-                <p style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#6b7280' }}>
-                  {formatEventTime(event.startTime)}
-                </p>
-                {event.location && (
-                  <p style={{ margin: '0', fontSize: '14px', color: '#6b7280' }}>
-                    📍
-                    {' '}
-                    {event.location}
-                  </p>
-                )}
-              </div>
-            ))}
-            {events.length > 5 && (
-              <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '16px' }}>
-                Showing 5 of
-                {' '}
-                {events.length}
-                {' '}
-                events
-              </p>
-            )}
+                <FaSync />
+                Refresh
+              </button>
+              <button
+                type="button"
+                className="calendar-btn primary"
+                onClick={handleAddEvent}
+                disabled={isLoading}
+              >
+                <FaPlus />
+                Add Event
+              </button>
+              <button
+                type="button"
+                className="calendar-btn secondary"
+                onClick={handleSignOut}
+                disabled={isLoading}
+              >
+                <FaSignOutAlt />
+                Sign Out
+              </button>
+            </div>
+
+            <div className="calendar-events">
+              <h4>Upcoming Events</h4>
+              {renderEvents()}
+            </div>
           </div>
         )}
       </div>
