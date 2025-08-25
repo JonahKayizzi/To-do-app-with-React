@@ -14,7 +14,7 @@ const InputTodoModal = ({ isOpen, onClose }) => {
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') onClose();
+        if (e.key === 'Escape') onClose();
       }}
     >
       <div
